@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('status')->default('pending');
-            $table->string('assignee');
+            $table->foreignId('assignee')->nullable()->constrained('users');
             $table->date('due_date');
             $table->timestamps();
         });

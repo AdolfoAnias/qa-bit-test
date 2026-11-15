@@ -14,6 +14,11 @@ class Task extends Model
         'due_date',
     ];
 
+    public function assignee()
+    {
+        return $this->belongsTo(User::class, 'assignee');
+    }
+        
     protected $casts = [
         'due_date' => 'date',
     ];
