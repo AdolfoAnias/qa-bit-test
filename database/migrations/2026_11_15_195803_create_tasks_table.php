@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('status')->default('pending');
-            $table->foreignId('assignee')->nullable()->constrained('users');
+            $table->foreignId('assignee')->constrained('users')->cascadeOnDelete();
             $table->date('due_date');
             $table->timestamps();
         });
