@@ -27,7 +27,7 @@ class UpdateTaskRequest extends FormRequest
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string'],
             'status' => ['sometimes', 'in:' . implode(',', Task::STATUSES)],
-            'assignee' => ['required', 'integer', 'exists:users,id'],
+            'assignee' => ['sometimes', 'integer', 'exists:users,id'],
             'due_date' => ['sometimes', 'date'],
         ];
     }

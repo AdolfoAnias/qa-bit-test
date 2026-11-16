@@ -17,9 +17,6 @@ class TaskController extends Controller
         private readonly TaskService $taskService,
     ) {}
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(): AnonymousResourceCollection
     {
         $tasks = $this->taskService->list(request());
@@ -52,6 +49,9 @@ class TaskController extends Controller
     {
         $this->taskService->delete($task);
 
-        return response()->json(null, 204);
+        return response()->json([
+            'message' => 'Tarea eliminada correctamente'
+        ], 200);
+        
     }
 }

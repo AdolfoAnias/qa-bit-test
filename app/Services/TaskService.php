@@ -1,12 +1,12 @@
 <?php
 
-namespace App\\Services;
+namespace App\Services;
 
 use App\Models\Task;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
-class \TaskService
+class TaskService
 {
     public function __construct()
     {
@@ -21,8 +21,11 @@ class \TaskService
                 fn ($query, $status) => $query->where('status', $status)
             )
             ->when(
-                $request->query('assignee'),
-                fn ($query, $assignee) => $query->where('assignee', $assignee)
+                $request->query('assignee_name'),
+                fn ($query, $name) => $query->whereHas(
+                    'assigneeUser',
+                    fn ($userQuery) => $userQuery->where('name', 'like', "%{$name}%")
+                )
             )
             ->orderByDesc('created_at')
             ->paginate($request->integer('per_page', 15))
