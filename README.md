@@ -76,3 +76,63 @@ php artisan test
 * **Implementación de pruebas con PHPUnit:** Se implementaron 5 *Feature Tests* utilizando `RefreshDatabase` y `TaskFactory` para validar de forma aislada el listado, creación, error de validación, actualización y borrado de tareas.
 
 ---
+
+## 📚 Documentación de la API (Swagger)
+
+Este proyecto utiliza **L5-Swagger** (OpenAPI) para documentar y probar los endpoints de forma interactiva.
+
+### Cómo generar y visualizar la documentación
+
+1. **Generar los archivos de Swagger:**
+   Cada vez que se modifique o agregue nuevos endpoints, ejecutar el siguiente comando en la raíz del proyecto:
+   ```bash
+   php artisan l5-swagger:generate
+   ```
+
+2. **Iniciar el servidor local:**
+   ```bash
+   php artisan serve
+   ```
+
+3. **Acceder desde el navegador:**
+   Abre la siguiente URL para explorar y probar la API:
+   * **Interfaz Swagger UI:** [http://127.0.0.1:8000/api/documentation]
+   
+---
+
+## 🔐 Autenticación y Protección de Rutas (Laravel Sanctum)
+
+Los endpoints de tareas están protegidos mediante el middleware `auth:sanctum`, por lo que es obligatorio enviar un **Bearer Token** válido en cada petición.
+
+### 1. Obtener un Token de acceso
+Envía una petición `POST` al endpoint de inicio de sesión o registro con las credenciales del usuario:
+
+* **Endpoint:** `POST /api/login` *(o `/api/register`)*
+* **Headers:**
+  ```text
+  Accept: application/json
+  Content-Type: application/json
+  ```
+* **Body (JSON):**
+  ```json
+  {
+    "email": "usuario@ejemplo.com",
+    "password": "tu_password"
+  }
+  ```
+* **Respuesta esperada (`200 OK`):**
+  ```json
+  {
+    "token": "1|aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890"
+  }
+  ```
+
+### 2. Usar el Token en Postman (o cliente HTTP)
+Para consumir cualquier ruta protegida (`/api/tasks`), incluye el token obtenido en la cabecera `Authorization`:
+
+```text
+Accept: application/json
+Authorization: Bearer 1|aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890
+```
+
+* Si el token no se envía, es inválido o ha expirado, la API responderá automáticamente con el código **`401 Unauthenticated`**.

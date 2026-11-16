@@ -11,6 +11,7 @@ use App\Services\TaskService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
@@ -117,6 +118,8 @@ class TaskController extends Controller
     )]    
     public function update(UpdateTaskRequest $request, Task $task): TaskResource
     {
+        Gate::authorize('update', $task);
+
         $task = $this->taskService->update($task, $request->validated());
 
         return TaskResource::make($task);
@@ -142,6 +145,8 @@ class TaskController extends Controller
     )]
     public function destroy(Task $task): JsonResponse
     {
+        Gate::authorize('delete', $task);
+        
         $this->taskService->delete($task);
 
         return response()->json([
