@@ -136,3 +136,9 @@ Authorization: Bearer 1|aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890
 ```
 
 * Si el token no se envía, es inválido o ha expirado, la API responderá automáticamente con el código **`401 Unauthenticated`**.
+
+---
+
+## 🔐 Implementación de historial de cambios (Laravel Audit)
+
+Las operaciones de Crear, actualizar y eliminar tareas estan configuradas con un historial de cambios implementado con Laravel Auditing 

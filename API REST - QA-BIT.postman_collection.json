@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "18694649-efea-42cb-b215-3c3051d21c64",
+		"_postman_id": "b20b3734-8c65-4908-94f5-b697c8013edc",
 		"name": "API REST - QA-BIT",
 		"description": "Colección para probar el CRUD, filtros y paginación de la API de tareas.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -135,9 +135,9 @@
 					"response": []
 				}
 			]
-		},		
+		},
 		{
-			"name": "Tareas",
+			"name": "Tasks",
 			"item": [
 				{
 					"name": "Listar tareas",
@@ -151,7 +151,7 @@
 									"type": "string"
 								}
 							]
-						},						
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -626,6 +626,10 @@
 		{
 			"key": "taskId",
 			"value": "1"
+		},
+		{
+			"key": "token",
+			"value": ""
 		}
 	]
 }

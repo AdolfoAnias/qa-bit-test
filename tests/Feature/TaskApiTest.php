@@ -6,14 +6,25 @@ use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
 
 class TaskApiTest extends TestCase
 {
     use RefreshDatabase;
 
+    // TEST 0: Seguridad Sanctum (Sin token -> 401 Unauthenticated)
+    public function test_rechaza_peticiones_sin_autenticacion_y_devuelve_401(): void
+    {
+        $response = $this->getJson('/api/tasks');
+
+        $response->assertStatus(401);
+    }
+
     // TEST 1: Listar tareas (GET /api/tasks -> 200 OK)
     public function test_puede_listar_todas_las_tareas(): void
     {
+        Sanctum::actingAs(User::factory()->create());
+
         Task::factory()->count(3)->create();
 
         $response = $this->getJson('/api/tasks');
@@ -26,6 +37,7 @@ class TaskApiTest extends TestCase
     public function test_puede_crear_una_nueva_tarea_con_datos_validos(): void
     {
         $user = User::factory()->create();
+        Sanctum::actingAs($user);
 
         $payload = [
             'title' => 'Terminar pruebas PHPUnit en Laravel 13',
@@ -49,6 +61,8 @@ class TaskApiTest extends TestCase
     // TEST 3: Error de validación al enviar datos inválidos (POST /api/tasks -> 422)
     public function test_falla_al_crear_tarea_con_datos_invalidos_y_devuelve_422(): void
     {
+        Sanctum::actingAs(User::factory()->create());
+
         $response = $this->postJson('/api/tasks', [
             'title' => '', 
             'due_date' => 'no-es-una-fecha', 
@@ -61,13 +75,19 @@ class TaskApiTest extends TestCase
     // TEST 4: Actualizar una tarea existente (PUT /api/tasks/{id} -> 200 OK)
     public function test_puede_actualizar_una_tarea_existente(): void
     {
-        $task = Task::factory()->create(['title' => 'Titulo original']);
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $task = Task::factory()->create([
+            'title' => 'Titulo original',
+            'assignee' => $user->id,
+        ]);
 
         $response = $this->putJson("/api/tasks/{$task->id}", [
             'title' => 'Titulo actualizado',
             'description' => $task->description,
             'status' => 'done',
-            'assignee' => $task->assignee,
+            'assignee' => $user->id,
             'due_date' => $task->due_date,
         ]);
 
@@ -83,7 +103,13 @@ class TaskApiTest extends TestCase
     // TEST 5: Eliminar una tarea (DELETE /api/tasks/{id} -> 204 No Content)
     public function test_puede_eliminar_una_tarea_y_devuelve_204(): void
     {
-        $task = Task::factory()->create();
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $task = Task::factory()->create([
+            'title' => 'Titulo original',
+            'assignee' => $user->id,
+        ]);
 
         $response = $this->deleteJson("/api/tasks/{$task->id}");
 

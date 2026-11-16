@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Task extends Model
+class Task extends Model implements Auditable
 {
     use HasFactory;
-    
+    use \OwenIt\Auditing\Auditable;
+
     protected $fillable = [
         'title',
         'description',

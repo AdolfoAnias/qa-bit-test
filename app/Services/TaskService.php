@@ -21,9 +21,9 @@ class TaskService
                 fn ($query, $status) => $query->where('status', $status)
             )
             ->when(
-                $request->query('assignee_name'),
+                $request->query('assignee'),
                 fn ($query, $name) => $query->whereHas(
-                    'assigneeUser',
+                    'assignedUser',
                     fn ($userQuery) => $userQuery->where('name', 'like', "%{$name}%")
                 )
             )
