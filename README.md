@@ -77,6 +77,38 @@ php artisan test
 
 ---
 
+## ⏳ Qué haría con más tiempo
+
+Dado que la API ya cuenta con autenticación por tokens (**Sanctum**), documentación interactiva (**Swagger**) y auditoría automática de cambios (**Laravel Auditing**), los siguientes pasos para llevar el sistema a producción a gran escala serían:
+
+* **Roles y permisos granulares (RBAC):** Implementar un sistema de roles (por ejemplo, `Admin` vs `Member` usando *Policies* o *Spatie Permission*) para definir quién puede ver el historial completo de auditoría (`/audits`), reasignar tareas a otros usuarios o eliminar registros de terceros.
+* **Borrado lógico (Soft Deletes) para preservar auditorías:** Añadir `SoftDeletes` al modelo `Task` para que, al eliminar una tarea (`DELETE`), no se pierda su referencia en la base de datos y los administradores puedan consultar su historial de auditoría o restaurarla en caso de error (Esto solo si fuera pedido en los requerimientos del proyecto).
+* **Paginación, filtros avanzados y búsqueda:** Incorporar paginación (`paginate()`)  en `GET /api/tasks/{id}/audits`, junto con filtros para mantener tiempos de respuesta bajos cuando crezca el volumen de datos.
+* **Notificaciones y colas asíncronas (Queues):** Disparar eventos y *Jobs* en segundo plano para enviar alertas por correo o webhook cuando a un usuario se le asigne una tarea o esté próxima a vencer (`due_date`).
+* **Rate Limiting y ciclo de vida de tokens:** Configurar límites de peticiones por minuto (*throttling*) para proteger el endpoint de login contra fuerza bruta y definir expiración y refresco automático de tokens en Sanctum.
+* **Pipeline de CI/CD con GitHub Actions:** Automatizar en cada *push* o *pull request* la ejecución de la suite de pruebas en PHPUnit, el formateo de código con **Laravel Pint** y el análisis estático con **PHPStan / Larastan**.
+
+---
+
+## 🤖 Uso de Inteligencia Artificial en el desarrollo
+
+Durante el desarrollo del proyecto utilice un asistente de IA como herramienta de consulta técnica, depuración y aceleración de pruebas, manteniendo criterio propio para validar e integrar cada solución en la arquitectura del proyecto:
+
+### 1. Qué le pedí
+* **Auditoría de cambios:** Guía de instalación y configuración del paquete `owen-it/laravel-auditing` compatible con el guard de `sanctum`.
+* **Pruebas automatizadas (PHPUnit):** Generación de la estructura base de `TaskFactory` y la suite de *Feature Tests* cubriendo CRUD, validaciones y autenticación por tokens con Sanctum.
+* **Documentación:** Estructuración del `README.md` y documentación de los endpoints protegidos.
+
+### 2. Qué acepté
+* La integración de `owen-it/laravel-auditing` vinculada al guard `sanctum` en `config/audit.php`.
+* El uso de `RefreshDatabase` y `Sanctum::actingAs()` en los tests de integración para simular peticiones autenticadas de forma aislada.
+
+### 3. Qué corregí y adapté
+* **Framework de testing:** La IA sugirió inicialmente los tests en sintaxis *Pest* (estándar por defecto en Laravel 13); adapté la suite completa a clases tradicionales de **PHPUnit** (`TestCase`).
+* **Reglas de dominio y estados válidos:** Ajusté los valores generados en `TaskFactory` y en los tests para que coincidieran con las 5 columnas exactas de mi migración (`title`, `description`, `status`, `assignee`, `due_date`) y con los estados permitidos por mis reglas de validación (`status`).
+* **Implementación del contrato `Auditable`:** Corregí el error de tipo en `Task.php` asegurando tanto la importación de la interfaz `OwenIt\Auditing\Contracts\Auditable` (`implements Auditable`) como el uso del trait `\OwenIt\Auditing\Auditable`.
+* **Autorización y propiedad de recursos en los tests:** Al integrar Sanctum y las reglas de autorización (`403 Forbidden`), adapté los tests de actualización y eliminación para asignar la tarea creada al mismo usuario autenticado (`'assignee' => $user->id`), garantizando el cumplimiento de las políticas de acceso.
+---
 ## 📚 Documentación de la API (Swagger)
 
 Este proyecto utiliza **L5-Swagger** (OpenAPI) para documentar y probar los endpoints de forma interactiva.
