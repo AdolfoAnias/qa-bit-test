@@ -1,0 +1,186 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API REST - QA-BIT",
+        "description": "Documentación de la API REST de prueba técnica de QA BIT",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1",
+            "description": "Servidor Local"
+        }
+    ],
+    "paths": {
+        "/tasks": {
+            "get": {
+                "tags": [
+                    "Tareas"
+                ],
+                "summary": "Listar todas las tareas",
+                "operationId": "6a93d54730cde509d735e538ab6800f6",
+                "responses": {
+                    "200": {
+                        "description": "Lista de tareas obtenida con éxito"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Tareas"
+                ],
+                "summary": "Crear una nueva tarea",
+                "operationId": "9b481c0ed5fdfa1a592d70ba39a348ee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Completar documentación API"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Añadir atributos de Swagger a los controladores",
+                                        "nullable": true
+                                    },
+                                    "completed": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tarea creada exitosamente"
+                    },
+                    "422": {
+                        "description": "Error de validación en los datos enviados"
+                    }
+                }
+            }
+        },
+        "/tasks/{task}": {
+            "get": {
+                "tags": [
+                    "Tareas"
+                ],
+                "summary": "Mostrar el detalle de una tarea",
+                "operationId": "2d3bd1c8c8bbb942e64655b95d2ccd31",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "ID de la tarea",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalle de la tarea obtenido"
+                    },
+                    "404": {
+                        "description": "Tarea no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Tareas"
+                ],
+                "summary": "Actualizar una tarea existente",
+                "operationId": "21fde229ffe8d43f5907fdc299a6e0be",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "ID de la tarea a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Tarea actualizada"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Nueva descripción",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tarea actualizada correctamente"
+                    },
+                    "404": {
+                        "description": "Tarea no encontrada"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tareas"
+                ],
+                "summary": "Eliminar una tarea",
+                "operationId": "2e76d38ee629d5be516c498ed02ff818",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "ID de la tarea a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tarea eliminada correctamente"
+                    },
+                    "404": {
+                        "description": "Tarea no encontrada"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Tareas",
+            "description": "Tareas"
+        }
+    ]
+}
